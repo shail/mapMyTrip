@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "name": "Boston Trip",
+  "latLng": {
+    "lat": 1.0,
+    "lng": 2.0
+  }
+}

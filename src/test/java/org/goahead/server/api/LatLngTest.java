@@ -19,8 +19,10 @@ public class LatLngTest {
   public void testInvalidLatLng() {
     final double expectedLat = -1000.0;
     final double expectedLng = 1.0;
-    assertThrows(IllegalArgumentException.class, () -> {
-      new LatLng(expectedLat, expectedLng);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new LatLng(expectedLat, expectedLng);
+        });
   }
 }

@@ -1,15 +1,18 @@
 package org.goahead.server.api;
 
 import com.google.common.base.Preconditions;
+import java.util.Objects;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Simple Trip container object
- */
+/** Simple Trip container object */
 public class Trip {
   private Integer id;
-  private String name;
-  private LatLng latLng;
+  @NotEmpty private String name;
+  @NotNull private LatLng latLng;
+
+  public Trip() {}
 
   public Trip(Integer id, String name, LatLng latLng) {
     Preconditions.checkArgument(StringUtils.isNotEmpty(name));
@@ -40,5 +43,28 @@ public class Trip {
 
   public void setLatLng(LatLng latLng) {
     this.latLng = latLng;
+  }
+
+  // TODO: if id ends up being non-optional then update this method
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Trip trip = (Trip) o;
+    return Objects.equals(id, trip.id) && name.equals(trip.name) && latLng.equals(trip.latLng);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, name, latLng);
+  }
+
+  @Override
+  public String toString() {
+    return "Trip{" + "id=" + id + ", name='" + name + '\'' + ", latLng=" + latLng + '}';
   }
 }
