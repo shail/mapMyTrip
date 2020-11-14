@@ -2,10 +2,17 @@ package org.goahead.server.api;
 
 import com.google.common.base.Preconditions;
 import java.util.Objects;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 
 /** Utility class for handling lat/lng along with validation */
 public class LatLng {
+  @DecimalMin(value = "-90.0", message = "Lat must be greater than -90.0")
+  @DecimalMax(value = "90.0", message = "Lat must be less than 90.0")
   private double lat;
+
+  @DecimalMin(value = "-180.0", message = "Lng must be greater than -180.0")
+  @DecimalMax(value = "180.0", message = "Lng must be less than 180.0")
   private double lng;
 
   public LatLng() {}

@@ -2,6 +2,7 @@ package org.goahead.server.api;
 
 import com.google.common.base.Preconditions;
 import java.util.Objects;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Trip {
   private Integer id;
   @NotEmpty private String name;
-  @NotNull private LatLng latLng;
+  @NotNull @Valid private LatLng latLng;
 
   public Trip() {}
 
