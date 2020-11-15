@@ -1,7 +1,7 @@
 package org.goahead.server.dao;
 
 import java.util.List;
-import org.goahead.server.api.Trip;
+import org.goahead.server.core.pojos.Trip;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;

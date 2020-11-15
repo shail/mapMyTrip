@@ -5,7 +5,7 @@ import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.goahead.server.api.Trip;
+import org.goahead.server.core.pojos.Trip;
 import org.goahead.server.dao.TripsDao;
 import org.goahead.server.mapper.TripsMapper;
 import org.goahead.server.resources.TripsResource;

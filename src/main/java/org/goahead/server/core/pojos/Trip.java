@@ -1,4 +1,4 @@
-package org.goahead.server.api;
+package org.goahead.server.core.pojos;
 
 import com.google.common.base.Preconditions;
 import java.util.Objects;
@@ -6,10 +6,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
+import org.goahead.server.api.LatLng;
 
 /** Simple Trip container object */
 public class Trip {
-  private Integer id;
+  @NotNull private Integer id;
   @NotEmpty private String name;
   @NotNull @Valid private LatLng latLng;
 
@@ -46,7 +47,6 @@ public class Trip {
     this.latLng = latLng;
   }
 
-  // TODO: if id ends up being non-optional then update this method
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -56,7 +56,9 @@ public class Trip {
       return false;
     }
     Trip trip = (Trip) o;
-    return Objects.equals(id, trip.id) && name.equals(trip.name) && latLng.equals(trip.latLng);
+    return id.equals(trip.id) &&
+        name.equals(trip.name) &&
+        latLng.equals(trip.latLng);
   }
 
   @Override

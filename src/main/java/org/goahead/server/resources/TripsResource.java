@@ -3,6 +3,7 @@ package org.goahead.server.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Preconditions;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
@@ -16,7 +17,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import org.goahead.server.api.Trip;
+import org.goahead.server.api.TripRepresentation;
+import org.goahead.server.core.pojos.Trip;
 import org.goahead.server.dao.TripsDao;
 
 @Path("/trips")
@@ -30,25 +32,27 @@ public class TripsResource {
 
   @GET
   @Timed
-  public List<Trip> getTrips() {
-    return tripsDao.getTrips();
+  public List<TripRepresentation> getTrips() {
+    return tripsDao.getTrips().stream().map(trip -> new TripRepresentation(trip)).collect(Collectors.toList());
   }
 
   @GET
   @Timed
   @Path("{id}")
-  public Trip getTrips(@PathParam("id") final int id) {
+  public TripRepresentation getTrips(@PathParam("id") final int id) {
     Trip trip = tripsDao.getTrip(id);
     if (trip == null) {
       throw new WebApplicationException("No trip exists with id: " + id, Status.NOT_FOUND);
     }
-    return trip;
+    return new TripRepresentation(trip);
   }
 
   @POST
   @Timed
   public Response createTrip(@NotNull @Valid final Trip trip) {
-    return Response.ok(String.valueOf(tripsDao.createTrip(trip))).build();
+    long id = tripsDao.createTrip(trip);
+    Trip createdTrip = tripsDao.getTrip((int) id);
+    return Response.ok(createdTrip).build();
   }
 
   @PUT

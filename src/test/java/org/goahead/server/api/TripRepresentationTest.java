@@ -5,9 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.jackson.Jackson;
+import org.goahead.server.core.pojos.Trip;
 import org.junit.Test;
 
-public class TripTest {
+public class TripRepresentationTest {
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
   private static final String TRIP_FIXTURE_PATH = "fixtures/api/trip.json";
 
