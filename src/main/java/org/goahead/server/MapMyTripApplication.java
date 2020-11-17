@@ -6,9 +6,9 @@ import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.goahead.server.core.pojos.Trip;
-import org.goahead.server.dao.TripsDao;
 import org.goahead.server.mapper.TripsMapper;
 import org.goahead.server.resources.TripsResource;
+import org.goahead.server.service.TripsService;
 import org.jdbi.v3.core.Jdbi;
 
 public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
@@ -33,7 +33,7 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
     final JdbiFactory databaseFactory = new JdbiFactory();
     final Jdbi jdbi =
         databaseFactory.build(environment, configuration.getDataSourceFactory(), "mysql");
-    final TripsDao tripsDao = jdbi.onDemand(TripsDao.class);
+    final TripsService tripsDao = jdbi.onDemand(TripsService.class);
     jdbi.registerRowMapper(Trip.class, new TripsMapper());
     // TODO: implement application
     environment.jersey().register(new TripsResource(tripsDao));

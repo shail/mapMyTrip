@@ -19,28 +19,30 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.goahead.server.api.TripRepresentation;
 import org.goahead.server.core.pojos.Trip;
-import org.goahead.server.dao.TripsDao;
+import org.goahead.server.service.TripsService;
 
 @Path("/trips")
 @Produces(MediaType.APPLICATION_JSON)
 public class TripsResource {
-  private final TripsDao tripsDao;
+  private final TripsService tripsService;
 
-  public TripsResource(TripsDao tripsDao) {
-    this.tripsDao = Preconditions.checkNotNull(tripsDao);
+  public TripsResource(TripsService tripsService) {
+    this.tripsService = Preconditions.checkNotNull(tripsService);
   }
 
   @GET
   @Timed
   public List<TripRepresentation> getTrips() {
-    return tripsDao.getTrips().stream().map(trip -> new TripRepresentation(trip)).collect(Collectors.toList());
+    return tripsService.getTrips().stream()
+        .map(trip -> new TripRepresentation(trip))
+        .collect(Collectors.toList());
   }
 
   @GET
   @Timed
   @Path("{id}")
-  public TripRepresentation getTrips(@PathParam("id") final int id) {
-    Trip trip = tripsDao.getTrip(id);
+  public TripRepresentation getTrip(@PathParam("id") final int id) {
+    Trip trip = tripsService.getTrip(id);
     if (trip == null) {
       throw new WebApplicationException("No trip exists with id: " + id, Status.NOT_FOUND);
     }
@@ -49,26 +51,21 @@ public class TripsResource {
 
   @POST
   @Timed
-  public Response createTrip(@NotNull @Valid final Trip trip) {
-    long id = tripsDao.createTrip(trip);
-    Trip createdTrip = tripsDao.getTrip((int) id);
-    return Response.ok(createdTrip).build();
+  public Response createTrip(@NotNull @Valid final TripRepresentation trip) {
+    return Response.ok(tripsService.createTrip(trip)).build();
   }
 
   @PUT
   @Timed
-  public Response updateTrip(@NotNull @Valid final Trip trip) {
-    tripsDao.updateTrip(trip);
-    return Response.ok().build();
+  public Response updateTrip(@NotNull @Valid final TripRepresentation trip) {
+    return Response.ok(tripsService.updateTrip(trip)).build();
   }
 
   @DELETE
   @Timed
   @Path("{id}")
   public Response deleteTrip(@PathParam("id") final int id) {
-    if (tripsDao.deleteTrip(id)) {
-      return Response.ok().build();
-    }
-    throw new WebApplicationException("No trip to delete with id: " + id, Status.NOT_FOUND);
+    tripsService.deleteTrip(id);
+    return Response.ok().build();
   }
 }

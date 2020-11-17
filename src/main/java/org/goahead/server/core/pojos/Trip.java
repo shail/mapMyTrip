@@ -7,10 +7,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.goahead.server.api.LatLng;
+import org.goahead.server.api.TripRepresentation;
 
 /** Simple Trip container object */
 public class Trip {
-  @NotNull private Integer id;
+  private Integer id;
   @NotEmpty private String name;
   @NotNull @Valid private LatLng latLng;
 
@@ -21,6 +22,13 @@ public class Trip {
     this.id = id;
     this.name = name;
     this.latLng = Preconditions.checkNotNull(latLng);
+  }
+
+  public Trip(TripRepresentation tripRepresentation) {
+    Preconditions.checkNotNull(tripRepresentation);
+    this.id = tripRepresentation.getId();
+    this.name = tripRepresentation.getName();
+    this.latLng = tripRepresentation.getLatLng();
   }
 
   public String getName() {
@@ -56,9 +64,7 @@ public class Trip {
       return false;
     }
     Trip trip = (Trip) o;
-    return id.equals(trip.id) &&
-        name.equals(trip.name) &&
-        latLng.equals(trip.latLng);
+    return id.equals(trip.id) && name.equals(trip.name) && latLng.equals(trip.latLng);
   }
 
   @Override

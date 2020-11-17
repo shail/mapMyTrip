@@ -11,8 +11,7 @@ import org.goahead.server.core.pojos.Trip;
 
 /** Simple Trip request/response object */
 public class TripRepresentation {
-  @Nullable
-  private Integer id;
+  @Nullable private Integer id;
   @NotEmpty private String name;
   @NotNull @Valid private LatLng latLng;
 
@@ -65,8 +64,9 @@ public class TripRepresentation {
       return false;
     }
     TripRepresentation tripRepresentation = (TripRepresentation) o;
-    return Objects.equals(id, tripRepresentation.id) && name.equals(tripRepresentation.name) && latLng.equals(
-        tripRepresentation.latLng);
+    return Objects.equals(id, tripRepresentation.id)
+        && name.equals(tripRepresentation.name)
+        && latLng.equals(tripRepresentation.latLng);
   }
 
   @Override

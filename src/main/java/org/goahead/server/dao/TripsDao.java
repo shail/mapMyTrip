@@ -23,7 +23,7 @@ public interface TripsDao {
   @SqlUpdate(
       "update trips set name = :trip.name, lat = :trip.latLng.lat, lng = :trip.latLng.lng where id"
           + " = :trip.id")
-  void updateTrip(@BindBean("trip") final Trip trip);
+  boolean updateTrip(@BindBean("trip") final Trip trip);
 
   @SqlUpdate("delete from trips where id = :id")
   boolean deleteTrip(@Bind("id") final int id);

@@ -16,8 +16,9 @@ public interface UsersDao {
   public User getUser(@Bind("id") final int id);
 
   @SqlUpdate(
-      "insert into users(first_name, last_name, age, email, password_hash, salt) values(:user.firstName,"
-          + ":user.lastName, :user.age, :user.email, :user.passwordHash, :user.salt)")
+      "insert into users(first_name, last_name, age, email, password_hash, salt)"
+          + " values(:user.firstName,:user.lastName, :user.age, :user.email, :user.passwordHash,"
+          + " :user.salt)")
   @GetGeneratedKeys("id")
   long createUser(@BindBean("user") final User user);
 
