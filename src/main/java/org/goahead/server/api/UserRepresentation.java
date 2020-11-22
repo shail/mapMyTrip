@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotEmpty;
 import org.apache.commons.lang3.StringUtils;
+import org.goahead.server.core.pojos.User;
 
 /** Simple User request/response object */
 public class UserRepresentation {
@@ -15,6 +16,14 @@ public class UserRepresentation {
   @NotEmpty private String email;
 
   public UserRepresentation() {}
+
+  public UserRepresentation(User user) {
+    this.id = user.getId();
+    this.firstName = user.getFirstName();
+    this.lastName = user.getLastName();
+    this.age = user.getAge();
+    this.email = user.getEmail();
+  }
 
   public UserRepresentation(
       final Integer id,

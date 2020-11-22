@@ -1,7 +1,9 @@
 package org.goahead.server.api;
 
 import com.google.common.base.Preconditions;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
+import org.goahead.server.core.pojos.User;
 
 /**
  * Extends the user representation for a create user request since this will involve a password
@@ -12,6 +14,11 @@ public class CreateUserRepresentation extends UserRepresentation {
 
   public CreateUserRepresentation() {
     super();
+  }
+
+  public CreateUserRepresentation(User user) {
+    super(user);
+    this.password = user.getPasswordHash();
   }
 
   public CreateUserRepresentation(
@@ -32,5 +39,25 @@ public class CreateUserRepresentation extends UserRepresentation {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    CreateUserRepresentation that = (CreateUserRepresentation) o;
+    return password.equals(that.password);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), password);
   }
 }
