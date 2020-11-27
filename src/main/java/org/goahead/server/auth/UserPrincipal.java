@@ -39,8 +39,7 @@ public class UserPrincipal implements Principal {
       return false;
     }
     UserPrincipal that = (UserPrincipal) o;
-    return name.equals(that.name) &&
-        roles.equals(that.roles);
+    return name.equals(that.name) && roles.equals(that.roles);
   }
 
   @Override

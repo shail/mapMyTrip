@@ -21,4 +21,32 @@ public class MapMyTripConfiguration extends Configuration {
   public DataSourceFactory getDataSourceFactory() {
     return database;
   }
+
+  @JsonProperty("crypto")
+  public Crypto crypto;
+
+  public static class Crypto {
+    @JsonProperty("secret")
+    public String secret;
+
+    public String getSecret() {
+      return secret;
+    }
+  }
+
+  public DataSourceFactory getDatabase() {
+    return database;
+  }
+
+  public void setDatabase(DataSourceFactory database) {
+    this.database = database;
+  }
+
+  public Crypto getCrypto() {
+    return crypto;
+  }
+
+  public void setCrypto(Crypto crypto) {
+    this.crypto = crypto;
+  }
 }

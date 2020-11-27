@@ -6,9 +6,9 @@ logging:
 
 database:
   driverClass: com.mysql.cj.jdbc.Driver
-  url: jdbc:mysql://localhost/mapMyTrip
-  user: mapMyTrip
-  password: mapMyTrip
+  url: ${MAP_MY_TRIP_DB_URL}
+  user: ${MAP_MY_TRIP_DB_USERNAME}
+  password: ${MAP_MY_TRIP_DB_PASSWORD}
   maxWaitForConnection: 1s
   validationQuery: "SELECT 1"
   validationQueryTimeout: 3s
@@ -18,3 +18,6 @@ database:
   evictionInterval: 10s
   minIdleTime: 1 minute
   checkConnectionOnBorrow: true
+
+crypto:
+  secret: ${MAP_MY_TRIP_CRYPTO_SECRET}

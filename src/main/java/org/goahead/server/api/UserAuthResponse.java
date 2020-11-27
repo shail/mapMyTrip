@@ -10,4 +10,3 @@ public class UserAuthResponse {
     this.token = token;
   }
 }
-

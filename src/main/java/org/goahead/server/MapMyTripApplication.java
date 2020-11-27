@@ -4,9 +4,7 @@ import com.github.toastshaman.dropwizard.auth.jwt.JwtAuthFilter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import io.dropwizard.Application;
-import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthFilter;
-import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.PolymorphicAuthDynamicFeature;
 import io.dropwizard.auth.PolymorphicAuthValueFactoryProvider;
 import io.dropwizard.auth.PrincipalImpl;
@@ -56,7 +54,8 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
     // TODO: application initialization
   }
 
-  private void registerAuthFilters(Environment environment, UsersService usersService) {
+  private void registerAuthFilters(
+      Environment environment, UsersService usersService, String secret) {
     final AuthFilter<BasicCredentials, PrincipalImpl> basicFilter =
         new BasicCredentialAuthFilter.Builder<PrincipalImpl>()
             .setAuthenticator(new BasicAuthenticator(usersService))
@@ -67,7 +66,7 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
         new JwtConsumerBuilder()
             .setAllowedClockSkewInSeconds(30)
             .setRequireSubject()
-            .setVerificationKey(new HmacKey("dfwzsdzwh823zebdwdz772632gdsbd3333".getBytes()))
+            .setVerificationKey(new HmacKey(secret.getBytes()))
             .build();
 
     final AuthFilter<JwtContext, PrincipalImpl> jwtFilter =
@@ -93,16 +92,17 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
   @Override
   public void run(final MapMyTripConfiguration configuration, final Environment environment) {
     final JdbiFactory databaseFactory = new JdbiFactory();
-    final TokenGenerator tokenGenerator = new JwtTokenGenerator();
     final Jdbi jdbi =
         databaseFactory.build(environment, configuration.getDataSourceFactory(), "mysql");
     final TripsService tripsDao = jdbi.onDemand(TripsService.class);
     jdbi.registerRowMapper(Trip.class, new TripsMapper());
     final UsersService userService = jdbi.onDemand(UsersService.class);
+    final String secret = configuration.getCrypto().getSecret();
+    final TokenGenerator tokenGenerator = new JwtTokenGenerator(secret);
     jdbi.registerRowMapper(User.class, new UsersMapper());
     environment.jersey().register(new TripsResource(tripsDao));
     environment.jersey().register(new UsersResource(userService));
     environment.jersey().register(new LoginResource(tokenGenerator));
-    registerAuthFilters(environment, userService);
+    registerAuthFilters(environment, userService, secret);
   }
 }

@@ -1,6 +1,5 @@
 package org.goahead.server.auth;
 
-
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.PrincipalImpl;
 import io.dropwizard.auth.basic.BasicCredentials;
