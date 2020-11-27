@@ -10,6 +10,8 @@ import io.dropwizard.auth.PolymorphicAuthValueFactoryProvider;
 import io.dropwizard.auth.PrincipalImpl;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -51,13 +53,16 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
   @Override
   public void initialize(final Bootstrap<MapMyTripConfiguration> bootstrap) {
     bootstrap.addBundle(new JdbiExceptionsBundle());
-    // TODO: application initialization
+    // This needs to be added in order to sub in environment variables to the config file
+    bootstrap.setConfigurationSourceProvider(
+        new SubstitutingSourceProvider(
+            bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
   }
 
   private void registerAuthFilters(
       Environment environment, UsersService usersService, String secret) {
-    final AuthFilter<BasicCredentials, PrincipalImpl> basicFilter =
-        new BasicCredentialAuthFilter.Builder<PrincipalImpl>()
+    final AuthFilter<BasicCredentials, UserPrincipal> basicFilter =
+        new BasicCredentialAuthFilter.Builder<UserPrincipal>()
             .setAuthenticator(new BasicAuthenticator(usersService))
             .setAuthorizer(new BasicAuthorizer())
             .buildAuthFilter();
@@ -78,11 +83,11 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
 
     final PolymorphicAuthDynamicFeature feature =
         new PolymorphicAuthDynamicFeature<>(
-            ImmutableMap.of(PrincipalImpl.class, basicFilter, UserPrincipal.class, jwtFilter));
+            ImmutableMap.of(UserPrincipal.class, basicFilter, PrincipalImpl.class, jwtFilter));
 
     final AbstractBinder binder =
         new PolymorphicAuthValueFactoryProvider.Binder(
-            ImmutableSet.of(PrincipalImpl.class, UserPrincipal.class));
+            ImmutableSet.of(UserPrincipal.class, PrincipalImpl.class));
 
     environment.jersey().register(feature);
     environment.jersey().register(binder);

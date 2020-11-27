@@ -15,7 +15,7 @@ public interface UsersDao {
   @SqlQuery("select * from users where id = :id")
   public User getUser(@Bind("id") final int id);
 
-  @SqlQuery("select * from users where id = :username")
+  @SqlQuery("select * from users where email = :username")
   public User getUser(@Bind("username") final String username);
 
   @SqlUpdate(

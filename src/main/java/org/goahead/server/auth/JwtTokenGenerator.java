@@ -2,7 +2,6 @@ package org.goahead.server.auth;
 
 import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA256;
 
-import io.dropwizard.auth.PrincipalImpl;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.keys.HmacKey;
@@ -16,7 +15,7 @@ public class JwtTokenGenerator implements TokenGenerator {
   }
 
   @Override
-  public String getToken(PrincipalImpl user) {
+  public String getToken(UserPrincipal user) {
     final JwtClaims claims = new JwtClaims();
     claims.setSubject(user.getName());
     claims.setStringClaim("user", user.getName());

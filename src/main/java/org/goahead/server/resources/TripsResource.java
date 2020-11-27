@@ -2,6 +2,8 @@ package org.goahead.server.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Preconditions;
+import io.dropwizard.auth.Auth;
+import io.dropwizard.auth.PrincipalImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -32,7 +34,7 @@ public class TripsResource {
 
   @GET
   @Timed
-  public List<TripRepresentation> getTrips() {
+  public List<TripRepresentation> getTrips(@Auth PrincipalImpl user) {
     return tripsService.getTrips().stream()
         .map(trip -> new TripRepresentation(trip))
         .collect(Collectors.toList());
@@ -41,7 +43,7 @@ public class TripsResource {
   @GET
   @Timed
   @Path("{id}")
-  public TripRepresentation getTrip(@PathParam("id") final int id) {
+  public TripRepresentation getTrip(@Auth PrincipalImpl user, @PathParam("id") final int id) {
     Trip trip = tripsService.getTrip(id);
     if (trip == null) {
       throw new WebApplicationException("No trip exists with id: " + id, Status.NOT_FOUND);
@@ -51,20 +53,22 @@ public class TripsResource {
 
   @POST
   @Timed
-  public Response createTrip(@NotNull @Valid final TripRepresentation trip) {
+  public Response createTrip(
+      @Auth PrincipalImpl user, @NotNull @Valid final TripRepresentation trip) {
     return Response.ok(tripsService.createTrip(trip)).build();
   }
 
   @PUT
   @Timed
-  public Response updateTrip(@NotNull @Valid final TripRepresentation trip) {
+  public Response updateTrip(
+      @Auth PrincipalImpl user, @NotNull @Valid final TripRepresentation trip) {
     return Response.ok(tripsService.updateTrip(trip)).build();
   }
 
   @DELETE
   @Timed
   @Path("{id}")
-  public Response deleteTrip(@PathParam("id") final int id) {
+  public Response deleteTrip(@Auth PrincipalImpl user, @PathParam("id") final int id) {
     tripsService.deleteTrip(id);
     return Response.ok().build();
   }

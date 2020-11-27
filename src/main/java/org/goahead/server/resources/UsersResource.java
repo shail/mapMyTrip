@@ -2,6 +2,8 @@ package org.goahead.server.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Preconditions;
+import io.dropwizard.auth.Auth;
+import io.dropwizard.auth.PrincipalImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -31,7 +33,7 @@ public class UsersResource {
 
   @GET
   @Timed
-  public List<UserRepresentation> getUsers() {
+  public List<UserRepresentation> getUsers(@Auth PrincipalImpl authUser) {
     return usersService.getUsers().stream()
         .map(user -> new UserRepresentation(user))
         .collect(Collectors.toList());
@@ -40,7 +42,7 @@ public class UsersResource {
   @GET
   @Timed
   @Path("{id}")
-  public Response getUser(@PathParam("id") final int id) {
+  public Response getUser(@Auth PrincipalImpl authUser, @PathParam("id") final int id) {
     User user = usersService.getUser(id);
     if (user == null) {
       throw new WebApplicationException("No user exists with id: " + id);
@@ -59,7 +61,7 @@ public class UsersResource {
   @DELETE
   @Timed
   @Path("{id}")
-  public Response deleteUser(@PathParam("id") final int id) {
+  public Response deleteUser(@Auth PrincipalImpl user, @PathParam("id") final int id) {
     usersService.deleteUser(id);
     return Response.ok().build();
   }
