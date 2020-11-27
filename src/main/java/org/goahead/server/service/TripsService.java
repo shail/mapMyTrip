@@ -1,12 +1,15 @@
 package org.goahead.server.service;
 
+import io.dropwizard.auth.PrincipalImpl;
 import java.util.List;
 import java.util.Objects;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 import org.goahead.server.api.TripRepresentation;
 import org.goahead.server.core.pojos.Trip;
+import org.goahead.server.core.pojos.User;
 import org.goahead.server.dao.TripsDao;
+import org.goahead.server.dao.UsersDao;
 import org.jdbi.v3.sqlobject.CreateSqlObject;
 
 /**
@@ -17,6 +20,9 @@ public interface TripsService {
   // Need this in order to reuse the same database connection
   @CreateSqlObject
   TripsDao tripsDao();
+
+  @CreateSqlObject
+  UsersDao usersDao();
 
   default Trip createTrip(final TripRepresentation tripRepresentation) {
     int id = (int) tripsDao().createTrip(new Trip(tripRepresentation));
@@ -47,5 +53,13 @@ public interface TripsService {
           String.format("No trip with id: %d found", id), Status.NOT_FOUND);
     }
     return true;
+  }
+
+  default boolean checkAccess(final PrincipalImpl authUser, final int id) {
+    User user = usersDao().getUser(id);
+    if (user == null) {
+      return false;
+    }
+    return authUser.getName().equals(user.getEmail());
   }
 }

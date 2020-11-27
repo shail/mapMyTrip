@@ -14,14 +14,16 @@ public class Trip {
   private Integer id;
   @NotEmpty private String name;
   @NotNull @Valid private LatLng latLng;
+  @NotNull private int userId;
 
   public Trip() {}
 
-  public Trip(Integer id, String name, LatLng latLng) {
+  public Trip(Integer id, String name, LatLng latLng, int userId) {
     Preconditions.checkArgument(StringUtils.isNotEmpty(name));
     this.id = id;
     this.name = name;
     this.latLng = Preconditions.checkNotNull(latLng);
+    this.userId = userId;
   }
 
   public Trip(TripRepresentation tripRepresentation) {
@@ -43,6 +45,10 @@ public class Trip {
     return latLng;
   }
 
+  public int getUserId() {
+    return userId;
+  }
+
   public void setId(Integer id) {
     this.id = id;
   }
@@ -55,6 +61,10 @@ public class Trip {
     this.latLng = latLng;
   }
 
+  public void setUserId(int userId) {
+    this.userId = userId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -64,16 +74,29 @@ public class Trip {
       return false;
     }
     Trip trip = (Trip) o;
-    return id.equals(trip.id) && name.equals(trip.name) && latLng.equals(trip.latLng);
+    return userId == trip.userId
+        && id.equals(trip.id)
+        && name.equals(trip.name)
+        && latLng.equals(trip.latLng);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, latLng);
+    return Objects.hash(id, name, latLng, userId);
   }
 
   @Override
   public String toString() {
-    return "Trip{" + "id=" + id + ", name='" + name + '\'' + ", latLng=" + latLng + '}';
+    return "Trip{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", latLng="
+        + latLng
+        + ", userId="
+        + userId
+        + '}';
   }
 }

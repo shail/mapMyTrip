@@ -32,6 +32,14 @@ public class TripsResource {
     this.tripsService = Preconditions.checkNotNull(tripsService);
   }
 
+  /** Validate that the user has access to read/write to a specific resource */
+  private void checkAccess(final PrincipalImpl authUser, final int id) {
+    if (!tripsService.checkAccess(authUser, id)) {
+      throw new WebApplicationException(
+          "Can't access trip for a user with a different id", Status.UNAUTHORIZED);
+    }
+  }
+
   @GET
   @Timed
   public List<TripRepresentation> getTrips(@Auth PrincipalImpl user) {
@@ -44,6 +52,7 @@ public class TripsResource {
   @Timed
   @Path("{id}")
   public TripRepresentation getTrip(@Auth PrincipalImpl user, @PathParam("id") final int id) {
+    checkAccess(user, id);
     Trip trip = tripsService.getTrip(id);
     if (trip == null) {
       throw new WebApplicationException("No trip exists with id: " + id, Status.NOT_FOUND);
@@ -62,6 +71,7 @@ public class TripsResource {
   @Timed
   public Response updateTrip(
       @Auth PrincipalImpl user, @NotNull @Valid final TripRepresentation trip) {
+    checkAccess(user, trip.getId());
     return Response.ok(tripsService.updateTrip(trip)).build();
   }
 
@@ -69,6 +79,7 @@ public class TripsResource {
   @Timed
   @Path("{id}")
   public Response deleteTrip(@Auth PrincipalImpl user, @PathParam("id") final int id) {
+    checkAccess(user, id);
     tripsService.deleteTrip(id);
     return Response.ok().build();
   }

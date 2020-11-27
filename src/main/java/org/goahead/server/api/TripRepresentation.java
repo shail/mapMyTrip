@@ -14,14 +14,16 @@ public class TripRepresentation {
   @Nullable private Integer id;
   @NotEmpty private String name;
   @NotNull @Valid private LatLng latLng;
+  @Nullable private Integer userId;
 
   public TripRepresentation() {}
 
-  public TripRepresentation(Integer id, String name, LatLng latLng) {
+  public TripRepresentation(Integer id, String name, LatLng latLng, Integer userId) {
     Preconditions.checkArgument(StringUtils.isNotEmpty(name));
     this.id = id;
     this.name = name;
     this.latLng = Preconditions.checkNotNull(latLng);
+    this.userId = userId;
   }
 
   public TripRepresentation(Trip trip) {
@@ -29,6 +31,7 @@ public class TripRepresentation {
     this.id = trip.getId();
     this.name = trip.getName();
     this.latLng = trip.getLatLng();
+    this.userId = trip.getUserId();
   }
 
   public String getName() {
@@ -43,6 +46,11 @@ public class TripRepresentation {
     return latLng;
   }
 
+  @Nullable
+  public Integer getUserId() {
+    return userId;
+  }
+
   public void setId(Integer id) {
     this.id = id;
   }
@@ -55,6 +63,10 @@ public class TripRepresentation {
     this.latLng = latLng;
   }
 
+  public void setUserId(@Nullable Integer userId) {
+    this.userId = userId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -63,19 +75,30 @@ public class TripRepresentation {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TripRepresentation tripRepresentation = (TripRepresentation) o;
-    return Objects.equals(id, tripRepresentation.id)
-        && name.equals(tripRepresentation.name)
-        && latLng.equals(tripRepresentation.latLng);
+    TripRepresentation that = (TripRepresentation) o;
+    return Objects.equals(id, that.id)
+        && name.equals(that.name)
+        && latLng.equals(that.latLng)
+        && Objects.equals(userId, that.userId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, latLng);
+    return Objects.hash(id, name, latLng, userId);
   }
 
   @Override
   public String toString() {
-    return "Trip{" + "id=" + id + ", name='" + name + '\'' + ", latLng=" + latLng + '}';
+    return "TripRepresentation{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", latLng="
+        + latLng
+        + ", userId="
+        + userId
+        + '}';
   }
 }
