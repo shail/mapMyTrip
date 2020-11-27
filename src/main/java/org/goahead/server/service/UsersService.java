@@ -27,6 +27,10 @@ public interface UsersService {
     return usersDao().getUser(id);
   }
 
+  default User getUser(final String username) {
+    return usersDao().getUser(username);
+  }
+
   default User updateUser(final UserRepresentation user) {
     User userToUpdate = usersDao().getUser(user.getId());
     if (Objects.isNull(userToUpdate)) {

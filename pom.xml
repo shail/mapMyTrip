@@ -49,6 +49,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.0-jre</version>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>3.6.0</version>
@@ -75,7 +80,16 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-auth</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.toastshaman</groupId>
+            <artifactId>dropwizard-auth-jwt</artifactId>
+            <version>1.1.2-0</version>
+        </dependency>
     </dependencies>
 
     <build>

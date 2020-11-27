@@ -15,6 +15,9 @@ public interface UsersDao {
   @SqlQuery("select * from users where id = :id")
   public User getUser(@Bind("id") final int id);
 
+  @SqlQuery("select * from users where id = :username")
+  public User getUser(@Bind("username") final String username);
+
   @SqlUpdate(
       "insert into users(first_name, last_name, age, email, password_hash, salt)"
           + " values(:user.firstName,:user.lastName, :user.age, :user.email, :user.passwordHash,"
