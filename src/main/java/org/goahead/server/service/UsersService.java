@@ -1,5 +1,6 @@
 package org.goahead.server.service;
 
+import io.dropwizard.auth.PrincipalImpl;
 import java.util.List;
 import java.util.Objects;
 import javax.ws.rs.WebApplicationException;
@@ -49,5 +50,13 @@ public interface UsersService {
           String.format("No user with id: %d found", id), Status.NOT_FOUND);
     }
     return true;
+  }
+
+  default boolean checkAccess(PrincipalImpl authUser, final int id) {
+    User user = getUser(id);
+    if (user == null) {
+      return false;
+    }
+    return authUser.getName().equals(user.getEmail());
   }
 }

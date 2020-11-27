@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.goahead.server.api.CreateUserRepresentation;
 import org.goahead.server.api.UserRepresentation;
 import org.goahead.server.core.pojos.User;
@@ -31,6 +32,14 @@ public class UsersResource {
     this.usersService = Preconditions.checkNotNull(usersService);
   }
 
+  /** Validate that the user has access to read/write to a specific resource */
+  private void checkAccess(final PrincipalImpl authUser, final int id) {
+    if (!usersService.checkAccess(authUser, id)) {
+      throw new WebApplicationException(
+          "Can't access user with a different id", Status.UNAUTHORIZED);
+    }
+  }
+
   @GET
   @Timed
   public List<UserRepresentation> getUsers(@Auth PrincipalImpl authUser) {
@@ -43,6 +52,7 @@ public class UsersResource {
   @Timed
   @Path("{id}")
   public Response getUser(@Auth PrincipalImpl authUser, @PathParam("id") final int id) {
+    checkAccess(authUser, id);
     User user = usersService.getUser(id);
     if (user == null) {
       throw new WebApplicationException("No user exists with id: " + id);
@@ -62,6 +72,7 @@ public class UsersResource {
   @Timed
   @Path("{id}")
   public Response deleteUser(@Auth PrincipalImpl user, @PathParam("id") final int id) {
+    checkAccess(user, id);
     usersService.deleteUser(id);
     return Response.ok().build();
   }
