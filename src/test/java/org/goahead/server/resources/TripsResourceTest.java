@@ -5,6 +5,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableSet;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.PolymorphicAuthValueFactoryProvider;
+import io.dropwizard.auth.PrincipalImpl;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import io.dropwizard.testing.junit5.ResourceExtension;
 import javax.ws.rs.client.Entity;
@@ -14,7 +18,9 @@ import javax.ws.rs.core.Response.Status;
 import org.assertj.core.util.Lists;
 import org.goahead.server.api.LatLng;
 import org.goahead.server.api.TripRepresentation;
+import org.goahead.server.auth.UserPrincipal;
 import org.goahead.server.core.pojos.Trip;
+import org.goahead.server.service.TripPointsService;
 import org.goahead.server.service.TripsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,10 +28,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class TripsResourceTest {
   private static final TripsService tripsService = mock(TripsService.class);
+  private static final TripPointsService tripsPointsService = mock(TripPointsService.class);
+  // TODO: fix this auth test
   private static final ResourceExtension resources =
-      ResourceExtension.builder().addResource(new TripsResource(tripsService)).build();
+      ResourceExtension.builder()
+      .addProvider(new PolymorphicAuthValueFactoryProvider.Binder(
+      ImmutableSet.of(UserPrincipal.class, PrincipalImpl.class)))
+          .addResource(new TripsResource(tripsService, tripsPointsService)).build();
   private static final String TRIPS_ENDPOINT = "/trips";
-  private final Trip trip = new Trip(1, "testTrip", new LatLng(1.0, 2.0));
+  private final Trip trip = new Trip(1, "testTrip", new LatLng(1.0, 2.0), 1);
 
   @Test
   public void testGetTrips() {
@@ -44,6 +55,7 @@ public class TripsResourceTest {
   public void testGetTrip() {
     final int id = 1;
     when(tripsService.getTrip(eq(id))).thenReturn(trip);
+    when(tripsPointsService.getTripPointsForTrip(eq(trip.getId()))).thenReturn(Lists.newArrayList());
     TripRepresentation tripResult =
         resources
             .target(TRIPS_ENDPOINT + "/" + id)

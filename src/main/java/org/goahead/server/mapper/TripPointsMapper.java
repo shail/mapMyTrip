@@ -3,17 +3,17 @@ package org.goahead.server.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.goahead.server.api.LatLng;
-import org.goahead.server.core.pojos.Trip;
+import org.goahead.server.core.pojos.TripPoint;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
-public class TripsMapper implements RowMapper<Trip> {
+public class TripPointsMapper implements RowMapper<TripPoint> {
+
   @Override
-  public Trip map(ResultSet rs, StatementContext ctx) throws SQLException {
-    return new Trip(
-        rs.getInt("id"),
-        rs.getString("name"),
+  public TripPoint map(ResultSet rs, StatementContext ctx) throws SQLException {
+    return new TripPoint(rs.getInt("id"),
+        rs.getInt("trip_id"),
         new LatLng(rs.getDouble("lat"), rs.getDouble("lng")),
-        rs.getInt("user_id"));
+        rs.getLong("timestamp"));
   }
 }

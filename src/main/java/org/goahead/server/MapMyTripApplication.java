@@ -16,6 +16,10 @@ import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.goahead.server.auth.BasicAuthenticator;
@@ -25,12 +29,15 @@ import org.goahead.server.auth.JwtTokenGenerator;
 import org.goahead.server.auth.TokenGenerator;
 import org.goahead.server.auth.UserPrincipal;
 import org.goahead.server.core.pojos.Trip;
+import org.goahead.server.core.pojos.TripPoint;
 import org.goahead.server.core.pojos.User;
+import org.goahead.server.mapper.TripPointsMapper;
 import org.goahead.server.mapper.TripsMapper;
 import org.goahead.server.mapper.UsersMapper;
 import org.goahead.server.resources.LoginResource;
 import org.goahead.server.resources.TripsResource;
 import org.goahead.server.resources.UsersResource;
+import org.goahead.server.service.TripPointsService;
 import org.goahead.server.service.TripsService;
 import org.goahead.server.service.UsersService;
 import org.jdbi.v3.core.Jdbi;
@@ -96,16 +103,29 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
 
   @Override
   public void run(final MapMyTripConfiguration configuration, final Environment environment) {
+    final FilterRegistration.Dynamic cors =
+        environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+    // Configure CORS parameters
+    cors.setInitParameter("allowedOrigins", "http://localhost:3000");
+    cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin,Authorization");
+    cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+
+    // Add URL mapping
+    cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+
     final JdbiFactory databaseFactory = new JdbiFactory();
     final Jdbi jdbi =
         databaseFactory.build(environment, configuration.getDataSourceFactory(), "mysql");
-    final TripsService tripsDao = jdbi.onDemand(TripsService.class);
+    final TripsService tripsService = jdbi.onDemand(TripsService.class);
     jdbi.registerRowMapper(Trip.class, new TripsMapper());
     final UsersService userService = jdbi.onDemand(UsersService.class);
     final String secret = configuration.getCrypto().getSecret();
     final TokenGenerator tokenGenerator = new JwtTokenGenerator(secret);
     jdbi.registerRowMapper(User.class, new UsersMapper());
-    environment.jersey().register(new TripsResource(tripsDao));
+
+    final TripPointsService tripPointsService = jdbi.onDemand(TripPointsService.class);
+    jdbi.registerRowMapper(TripPoint.class, new TripPointsMapper());
+    environment.jersey().register(new TripsResource(tripsService, tripPointsService));
     environment.jersey().register(new UsersResource(userService));
     environment.jersey().register(new LoginResource(tokenGenerator));
     registerAuthFilters(environment, userService, secret);

@@ -21,3 +21,11 @@ database:
 
 crypto:
   secret: ${MAP_MY_TRIP_CRYPTO_SECRET}
+
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 9001

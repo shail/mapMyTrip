@@ -21,15 +21,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.goahead.server.api.TripRepresentation;
 import org.goahead.server.core.pojos.Trip;
+import org.goahead.server.core.pojos.TripPoint;
+import org.goahead.server.service.TripPointsService;
 import org.goahead.server.service.TripsService;
 
 @Path("/trips")
 @Produces(MediaType.APPLICATION_JSON)
 public class TripsResource {
   private final TripsService tripsService;
+  private final TripPointsService tripPointsService;
 
-  public TripsResource(TripsService tripsService) {
+  public TripsResource(TripsService tripsService, TripPointsService tripPointsService) {
     this.tripsService = Preconditions.checkNotNull(tripsService);
+    this.tripPointsService = Preconditions.checkNotNull(tripPointsService);
   }
 
   /** Validate that the user has access to read/write to a specific resource */
@@ -57,7 +61,8 @@ public class TripsResource {
     if (trip == null) {
       throw new WebApplicationException("No trip exists with id: " + id, Status.NOT_FOUND);
     }
-    return new TripRepresentation(trip);
+    List<TripPoint> tripPoints = tripPointsService.getTripPointsForTrip(trip.getId());
+    return new TripRepresentation(trip, tripPoints);
   }
 
   @POST

@@ -4,5 +4,6 @@
   "latLng": {
     "lat": 1.0,
     "lng": 2.0
-  }
+  },
+  "userId": 1
 }

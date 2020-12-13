@@ -15,7 +15,7 @@ public class TripRepresentationTest {
   @Test
   public void serializesToJson() throws Exception {
     // create a trip object
-    final Trip trip = new Trip(1, "Boston Trip", new LatLng(1.0, 2.0));
+    final Trip trip = new Trip(1, "Boston Trip", new LatLng(1.0, 2.0), 1);
     // read the JSON from a file and compare that serializing the Trip object results in what is
     // expected
     final String expected =
@@ -26,7 +26,7 @@ public class TripRepresentationTest {
   @Test
   public void deserializesFromJson() throws Exception {
     // create a trip object
-    final Trip trip = new Trip(1, "Boston Trip", new LatLng(1.0, 2.0));
+    final Trip trip = new Trip(1, "Boston Trip", new LatLng(1.0, 2.0), 1);
     // deserialize object from JSON and make sure the fields are what you expected
     final Trip expectedTrip = MAPPER.readValue(fixture(TRIP_FIXTURE_PATH), Trip.class);
     assertThat(expectedTrip.getId()).isEqualTo(trip.getId());
