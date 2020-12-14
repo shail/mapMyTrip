@@ -6,9 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.goahead.server.api.LatLng;
 
-/**
- * This class is a simple representation of a point that is associated with a trip.
- */
+/** This class is a simple representation of a point that is associated with a trip. */
 public class TripPoint {
   private Integer id;
   @NotNull private int tripId;
@@ -65,10 +63,10 @@ public class TripPoint {
       return false;
     }
     TripPoint tripPoint = (TripPoint) o;
-    return tripId == tripPoint.tripId &&
-        timestampMs == tripPoint.timestampMs &&
-        Objects.equals(id, tripPoint.id) &&
-        latLng.equals(tripPoint.latLng);
+    return tripId == tripPoint.tripId
+        && timestampMs == tripPoint.timestampMs
+        && Objects.equals(id, tripPoint.id)
+        && latLng.equals(tripPoint.latLng);
   }
 
   @Override
@@ -78,11 +76,15 @@ public class TripPoint {
 
   @Override
   public String toString() {
-    return "TripPoint{" +
-        "id=" + id +
-        ", tripId=" + tripId +
-        ", latLng=" + latLng +
-        ", timestampMs=" + timestampMs +
-        '}';
+    return "TripPoint{"
+        + "id="
+        + id
+        + ", tripId="
+        + tripId
+        + ", latLng="
+        + latLng
+        + ", timestampMs="
+        + timestampMs
+        + '}';
   }
 }

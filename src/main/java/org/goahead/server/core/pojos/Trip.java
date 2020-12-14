@@ -31,6 +31,7 @@ public class Trip {
     this.id = tripRepresentation.getId();
     this.name = tripRepresentation.getName();
     this.latLng = tripRepresentation.getLatLng();
+    this.userId = tripRepresentation.getUserId();
   }
 
   public String getName() {

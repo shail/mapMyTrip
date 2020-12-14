@@ -107,7 +107,8 @@ public class MapMyTripApplication extends Application<MapMyTripConfiguration> {
         environment.servlets().addFilter("CORS", CrossOriginFilter.class);
     // Configure CORS parameters
     cors.setInitParameter("allowedOrigins", "http://localhost:3000");
-    cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin,Authorization");
+    cors.setInitParameter(
+        "allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin,Authorization");
     cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
 
     // Add URL mapping

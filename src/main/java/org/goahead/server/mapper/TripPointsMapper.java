@@ -11,7 +11,8 @@ public class TripPointsMapper implements RowMapper<TripPoint> {
 
   @Override
   public TripPoint map(ResultSet rs, StatementContext ctx) throws SQLException {
-    return new TripPoint(rs.getInt("id"),
+    return new TripPoint(
+        rs.getInt("id"),
         rs.getInt("trip_id"),
         new LatLng(rs.getDouble("lat"), rs.getDouble("lng")),
         rs.getLong("timestamp"));

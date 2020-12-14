@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -23,7 +22,8 @@ public class TripRepresentation {
 
   public TripRepresentation() {}
 
-  public TripRepresentation(Integer id, String name, LatLng latLng, Integer userId, List<TripPoint> points) {
+  public TripRepresentation(
+      Integer id, String name, LatLng latLng, Integer userId, List<TripPoint> points) {
     Preconditions.checkArgument(StringUtils.isNotEmpty(name));
     this.id = id;
     this.name = name;
@@ -33,11 +33,21 @@ public class TripRepresentation {
   }
 
   public TripRepresentation(Trip trip) {
-    this(Preconditions.checkNotNull(trip).getId(), trip.getName(), trip.getLatLng(), trip.getUserId(), Lists.newArrayList());
+    this(
+        Preconditions.checkNotNull(trip).getId(),
+        trip.getName(),
+        trip.getLatLng(),
+        trip.getUserId(),
+        Lists.newArrayList());
   }
 
   public TripRepresentation(Trip trip, List<TripPoint> points) {
-    this(Preconditions.checkNotNull(trip).getId(), trip.getName(), trip.getLatLng(), trip.getUserId(), points);
+    this(
+        Preconditions.checkNotNull(trip).getId(),
+        trip.getName(),
+        trip.getLatLng(),
+        trip.getUserId(),
+        points);
   }
 
   public List<TripPoint> getPoints() {
@@ -90,11 +100,11 @@ public class TripRepresentation {
       return false;
     }
     TripRepresentation that = (TripRepresentation) o;
-    return Objects.equals(id, that.id) &&
-        name.equals(that.name) &&
-        latLng.equals(that.latLng) &&
-        userId.equals(that.userId) &&
-        Objects.equals(points, that.points);
+    return Objects.equals(id, that.id)
+        && name.equals(that.name)
+        && latLng.equals(that.latLng)
+        && userId.equals(that.userId)
+        && Objects.equals(points, that.points);
   }
 
   @Override
@@ -104,12 +114,18 @@ public class TripRepresentation {
 
   @Override
   public String toString() {
-    return "TripRepresentation{" +
-        "id=" + id +
-        ", name='" + name + '\'' +
-        ", latLng=" + latLng +
-        ", userId=" + userId +
-        ", points=" + points +
-        '}';
+    return "TripRepresentation{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", latLng="
+        + latLng
+        + ", userId="
+        + userId
+        + ", points="
+        + points
+        + '}';
   }
 }
